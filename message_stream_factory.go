@@ -2,7 +2,9 @@ package iggy
 
 import (
 	"errors"
-	"github.com/iggy-rs/iggy-go-client/tcp"
+
+	"github.com/iggy-rs/iggy-go-client/net/http"
+	"github.com/iggy-rs/iggy-go-client/net/tcp"
 
 	iggcon "github.com/iggy-rs/iggy-go-client/contracts"
 )
@@ -20,6 +22,14 @@ func (msf *IggyClientFactory) CreateMessageStream(config iggcon.IggyConfiguratio
 			return nil, err
 		}
 		return tcpMessageStream, nil
+	}
+
+	if config.Protocol == iggcon.Http {
+		httpMessageStream, err := http.NewHttppMessageStream(config.BaseAddress)
+		if err != nil {
+			return nil, err
+		}
+		return httpMessageStream, nil
 	}
 
 	return nil, errors.New("unsupported protocol")
